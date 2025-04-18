@@ -41,7 +41,12 @@ class NewPasswordController extends Controller
         ]);
 
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only(
+                'email',
+                'password',
+                'password_confirmation',
+                'token'
+            ),
             fn ($user) => $this->resetPassword($user, $request)
         );
 

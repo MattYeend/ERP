@@ -73,7 +73,7 @@ class Log extends Model
 
             if (is_array($data)) {
                 $data = json_encode($data);
-            } elseif (!is_null($data)) {
+            } elseif (! is_null($data)) {
                 throw new \InvalidArgumentException(
                     'Data must be an array or null.'
                 );
