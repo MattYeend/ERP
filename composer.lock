@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a67859bce9adec1d13a2b1e11e35248b",
+    "content-hash": "f1701a99fff3fb3ab20a86b9e9ab4a54",
     "packages": [
         {
             "name": "brick/math",
@@ -2153,6 +2153,77 @@
                 }
             ],
             "time": "2025-03-05T20:34:15+00:00"
+        },
+        {
+            "name": "mattyeend/prevent-destructive-commands",
+            "version": "v1.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MatthewYeend/Prevent-Destructive-Commands.git",
+                "reference": "b3c333e505904680e2934a4c6fbfa6c6bc30cee2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MatthewYeend/Prevent-Destructive-Commands/zipball/b3c333e505904680e2934a4c6fbfa6c6bc30cee2",
+                "reference": "b3c333e505904680e2934a4c6fbfa6c6bc30cee2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^10.0 || ^11.0 || ^12.0",
+                "laravel/framework": "^10.0 || ^11.0 || ^12.0",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0 || ^8.0",
+                "phpunit/phpunit": "^9.0 || ^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MattYeend\\PreventDestructiveCommands\\PreventDestructiveCommandsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mattyeend\\PreventDestructiveCommands\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matt Yeend",
+                    "email": "mail@mattyeend.co.uk"
+                }
+            ],
+            "description": "A Laravel package to stop destructive commands.",
+            "keywords": [
+                "Destructive",
+                "Prevent-Destructive-Commands",
+                "commands",
+                "laravel",
+                "package",
+                "prevent"
+            ],
+            "support": {
+                "issues": "https://github.com/MatthewYeend/Prevent-Destructive-Commands/issues",
+                "source": "https://github.com/MatthewYeend/Prevent-Destructive-Commands/tree/v1.1.8"
+            },
+            "funding": [
+                {
+                    "url": "https://www.buymeacoffee.com/mattyeend",
+                    "type": "buy_me_a_coffee"
+                },
+                {
+                    "url": "https://github.com/MattYeend",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-04-02T07:18:11+00:00"
         },
         {
             "name": "monolog/monolog",
