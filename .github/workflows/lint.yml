@@ -2,13 +2,9 @@ name: linter
 
 on:
   push:
-    branches:
-      - develop
-      - main
+    branches: [develop, main]
   pull_request:
-    branches:
-      - develop
-      - main
+    branches: [develop, main]
 
 permissions:
   contents: write
@@ -16,54 +12,55 @@ permissions:
 jobs:
   quality:
     runs-on: ubuntu-latest
+
     steps:
+      # Checkout repository code
       - uses: actions/checkout@v4
 
-      # Cache Composer dependencies
-      - name: Cache Composer dependencies
+      # Cache Composer vendor directory to avoid reinstalling PHP dependencies
+      - name: Cache Composer vendor directory
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-vendor-
+
+      # Cache Composer internal cache (downloads)
+      - name: Cache Composer downloads
         uses: actions/cache@v3
         with:
           path: ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          restore-keys: ${{ runner.os }}-composer-
 
       # Cache npm dependencies
-      - name: Cache npm dependencies
+      - name: Cache node_modules
         uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+          restore-keys: ${{ runner.os }}-npm-
 
-      # Setup PHP
+      # Setup PHP environment
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
 
-      # Install Composer and Node dependencies
+      # Install PHP and Node.js dependencies
       - name: Install Dependencies
         run: |
-          composer install --no-interaction --prefer-dist --optimize-autoloader
+          composer install --no-interaction --prefer-dist --no-progress
           npm install
 
-      # Run Pint (PHP Code Style)
+      # Run Laravel Pint for PHP code style
       - name: Run Pint
         run: vendor/bin/pint
 
-      # Format Frontend
+      # Format frontend code (e.g. Prettier)
       - name: Format Frontend
         run: npm run format
 
-      # Lint Frontend
+      # Lint frontend code (e.g. ESLint)
       - name: Lint Frontend
         run: npm run lint
-
-      # Optional Commit Changes
-      # - name: Commit Changes
-      #   uses: stefanzweifel/git-auto-commit-action@v5
-      #   with:
-      #     commit_message: fix code style
-      #     commit_options: '--no-verify'
