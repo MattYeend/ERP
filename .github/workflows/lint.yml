@@ -21,7 +21,7 @@ jobs:
 
       # Cache Composer dependencies
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.composer/cache
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -30,7 +30,7 @@ jobs:
 
       # Cache npm dependencies
       - name: Cache npm dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
@@ -61,7 +61,7 @@ jobs:
       - name: Lint Frontend
         run: npm run lint
 
-      # Optional Commit Changes (uncomment if needed)
+      # Optional: Commit Changes Automatically
       # - name: Commit Changes
       #   uses: stefanzweifel/git-auto-commit-action@v5
       #   with:
