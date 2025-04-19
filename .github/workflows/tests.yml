@@ -2,9 +2,11 @@ name: tests
 
 on:
   push:
-    branches: [develop, main]
+    branches:
+      - main  # This will trigger the workflow only when merging into the 'main' branch.
   pull_request:
-    branches: [develop, main]
+    branches:
+      - main  # This will also trigger for pull requests targeting 'main'
 
 jobs:
   ci:
