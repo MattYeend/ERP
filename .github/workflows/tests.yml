@@ -18,23 +18,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache vendor folder
-        id: cache-vendor
-        uses: actions/cache@v2
+      # Cache Composer dependencies
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
         with:
-          path: vendor
-          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-vendor-
+            ${{ runner.os }}-composer-
 
+      # Cache npm dependencies
       - name: Cache npm dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
 
+      # Setup PHP
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -42,30 +44,37 @@ jobs:
           tools: composer:v2
           coverage: xdebug
 
+      # Setup Node
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
+      # Install Node dependencies
       - name: Install Node Dependencies
         run: npm ci
 
+      # Install PHP dependencies
       - name: Install PHP Dependencies
-        if: steps.cache-vendor.outputs.cache-hit != 'true'
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      # Copy Environment File
       - name: Copy Environment File
         run: cp .env.example .env
 
+      # Generate Application Key
       - name: Generate Application Key
         run: php artisan key:generate
 
+      # Publish Ziggy Configuration
       - name: Publish Ziggy Configuration
         run: php artisan ziggy:generate
 
+      # Build Assets
       - name: Build Assets
         run: npm run build
 
+      # Run Tests
       - name: Run Tests
         run: ./vendor/bin/pest

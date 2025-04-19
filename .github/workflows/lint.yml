@@ -19,40 +19,51 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache vendor folder
-        id: cache-vendor
-        uses: actions/cache@v2
+      # Cache Composer dependencies
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
         with:
-          path: vendor
-          key: ${{ runner.os }}-vendor-${{ hashFiles('composer.lock') }}
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-vendor-
+            ${{ runner.os }}-composer-
 
+      # Cache npm dependencies
       - name: Cache npm dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
 
+      # Setup PHP
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
 
-      - name: Install Composer Dependencies
-        if: steps.cache-vendor.outputs.cache-hit != 'true'
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      # Install Composer and Node dependencies
+      - name: Install Dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+          npm install
 
-      - name: Install Node Dependencies
-        run: npm install
-
+      # Run Pint (PHP Code Style)
       - name: Run Pint
         run: vendor/bin/pint
 
+      # Format Frontend
       - name: Format Frontend
         run: npm run format
 
+      # Lint Frontend
       - name: Lint Frontend
         run: npm run lint
+
+      # Optional Commit Changes
+      # - name: Commit Changes
+      #   uses: stefanzweifel/git-auto-commit-action@v5
+      #   with:
+      #     commit_message: fix code style
+      #     commit_options: '--no-verify'
