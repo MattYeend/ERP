@@ -19,25 +19,49 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Cache Composer dependencies
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # Cache npm dependencies
+      - name: Cache npm dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      # Setup PHP
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
 
+      # Install Composer and Node dependencies
       - name: Install Dependencies
         run: |
-          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+          composer install --no-interaction --prefer-dist --optimize-autoloader
           npm install
 
+      # Run Pint (PHP Code Style)
       - name: Run Pint
         run: vendor/bin/pint
 
+      # Format Frontend
       - name: Format Frontend
         run: npm run format
 
+      # Lint Frontend
       - name: Lint Frontend
         run: npm run lint
 
+      # Optional Commit Changes (uncomment if needed)
       # - name: Commit Changes
       #   uses: stefanzweifel/git-auto-commit-action@v5
       #   with:
